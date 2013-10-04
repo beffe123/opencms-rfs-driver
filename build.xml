@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="RFS Driver">
+
+	<property name="version" value="8.5.0.7" />
+	<property name="target" location="target/"/>
+	<property name="classes" location="bin/"/>
+	<property name="target.jar" value="${target}/metamesh_rfs-${version}.jar"/>
+
+  <tstamp>
+      <format property="release.time" pattern="EEE, d MMM yyyy HH:mm:ss" locale="en,UK"/>
+  </tstamp>
+	
+  <target name="jar">
+      
+      <echo>${release.time}</echo>
+      
+  	  <mkdir dir="${target}"/>
+      <delete file="${target.jar}" />
+      <jar destfile="${target.jar}">
+          <fileset dir="${classes}" />
+      </jar>
+      
+      
+  </target>
+</project>
+

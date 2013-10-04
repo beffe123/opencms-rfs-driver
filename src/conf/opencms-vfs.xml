@@ -1,0 +1,5 @@
+
+        <!-- loader class="org.opencms.loader.CmsDumpLoader" / -->
+        <loader class="com.metamesh.opencms.rfs.RfsAwareDumpLoader" />
+        <!-- loader class="org.opencms.loader.CmsJspLoader" -->
+        <loader class="com.metamesh.opencms.rfs.RfsAwareJspLoader">
