@@ -15,10 +15,10 @@ Purpose
   * In automated deployments there is no need to script with CmsShell, where the process is also as time consuming
     as with manual updates
 3. Support for large files like videos
-  * It is wise to keep large files out of the DB. The normal process in OpenCms is to load the file content at first
-    completely from the DB into memory (a byte array) and then write it to the output stream. The drawbacks are that
-    it takes some time (the larger the file the longer it takes) until OpenCms starts to send data to the client and
-    that you occupy much heap space.
+  * It is wise to keep large files out of the DB. The normal process in OpenCms for serving a binary file is to load 
+    the file content at first completely from the DB into memory (a byte array) and then write it to 
+    the output stream. The drawbacks are that it takes some time (the larger the file the longer it takes) 
+    until OpenCms starts to send data to the client and that it requires much heap space.
   * The RFS driver comes with an improved dump loader that streams those large files directly from the RFS. Playback
     of videos can start immediately and it uses only 4 KB of heap.
 
