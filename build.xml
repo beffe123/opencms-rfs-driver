@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="RFS Driver">
 
-	<property name="version" value="8.5.0.7" />
+	<property name="version" value="8.5.0.8" />
 	<property name="target" location="target/"/>
 	<property name="classes" location="bin/"/>
 	<property name="target.jar" value="${target}/metamesh_rfs-${version}.jar"/>
