@@ -54,6 +54,7 @@ Notes
 
 History
 -------
+- releases/metamesh_rfs-8.5.0.8.jar: added support for range requests
 - releases/metamesh_rfs-8.5.0.7.jar is compatible with OpenCms 8.5.x
 
 License
