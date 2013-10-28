@@ -242,6 +242,9 @@ public class MappingData {
             if (".svn".equals(sub.getName())) continue;
             vfsPath = CmsFileUtil.addTrailingSeparator(vfsPath);
           }
+          
+          if ("manifest.xml".equals(sub.getName())) continue;
+          
           CmsResource subResource = null;
           if (override || !resourcesByPath.containsKey(CmsFileUtil.removeTrailingSeparator(vfsPath))) {
             

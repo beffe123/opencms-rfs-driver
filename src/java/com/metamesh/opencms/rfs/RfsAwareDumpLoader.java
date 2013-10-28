@@ -35,8 +35,10 @@
 
 package com.metamesh.opencms.rfs;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -209,7 +211,100 @@ public class RfsAwareDumpLoader extends CmsDumpLoader implements I_CmsResourceLo
   public void load(CmsObject cms, CmsResource resource, HttpServletRequest req, HttpServletResponse res)
   throws IOException, CmsException {
 
+
+    if (!(resource instanceof RfsCmsResource)) {
       super.load(cms, resource, req, res);
+      return;
+    }
+    
+    if (canSendLastModifiedHeader(resource, req, res)) {
+        // no further processing required
+        return;
+    }
+
+    if (CmsWorkplaceManager.isWorkplaceUser(req)) {
+      // prevent caching for Workplace users
+      res.setDateHeader(CmsRequestUtil.HEADER_LAST_MODIFIED, System.currentTimeMillis());
+      CmsRequestUtil.setNoCacheHeaders(res);
+    }
+
+    RfsCmsResource rfsFile = (RfsCmsResource)resource;
+    File f = rfsFile.getRfsFile();
+
+    if (f.getName().toLowerCase().endsWith("webm")) {
+      res.setHeader("Content-Type", "video/webm");
+    }
+    else if (f.getName().toLowerCase().endsWith("ogv")) {
+      res.setHeader("Content-Type", "video/ogg");
+    }
+    else if (f.getName().toLowerCase().endsWith("mp4")) {
+      res.setHeader("Content-Type", "video/mp4");
+    }
+    
+    if (req.getMethod().equalsIgnoreCase("HEAD")) {
+      res.setStatus(HttpServletResponse.SC_OK);
+      res.setHeader("Accept-Ranges", "bytes");
+      res.setContentLength((int)f.length());
+      return;
+    }
+    else if (req.getMethod().equalsIgnoreCase("GET")) {
+      if (req.getHeader("Range") != null) {
+
+        String range = req.getHeader("Range");
+
+        String[] string = range.split("=")[1].split("-");
+        long start = Long.parseLong(string[0]);
+        long end = string.length == 1 ? f.length() - 1 : Long.parseLong(string[1]);
+        long length = end - start + 1;
+
+        res.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+        
+        res.setHeader("Accept-Ranges", "bytes");
+        res.setHeader("Content-Length", "" + length);
+        res.setHeader("Content-Range", "bytes " + start + "-" + end + "/" + f.length());
+
+        RandomAccessFile ras = null;
+        
+        try {
+          ras = new RandomAccessFile(f, "r");
+          ras.seek(start);
+          final int chunkSize = 4096;
+          byte[] buffy = new byte[chunkSize];
+          int nextChunkSize = length > chunkSize ? chunkSize : (int)length;
+          long bytesLeft = length;
+          while(bytesLeft > 0) {
+            ras.read(buffy, 0, nextChunkSize);
+            res.getOutputStream().write(buffy, 0, nextChunkSize);
+            res.getOutputStream().flush();
+            bytesLeft = bytesLeft - nextChunkSize;
+            nextChunkSize = bytesLeft > chunkSize ? chunkSize : (int)bytesLeft;
+            
+            /*
+             * to simulate lower bandwidth
+             */
+            /*
+            try {
+              Thread.sleep(10);
+            } catch (InterruptedException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
+            */
+          }
+        }
+        finally {
+          if (ras != null) {
+            ras.close();
+          }
+        }
+        return;
+      }
+    }
+    
+    res.setStatus(HttpServletResponse.SC_OK);
+    res.setHeader("Accept-Ranges", "bytes");
+    res.setContentLength((int)f.length());
+    service(cms, resource, req, res);
   }
 
   /**
