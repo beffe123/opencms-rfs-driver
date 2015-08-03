@@ -178,7 +178,7 @@ public class RfsAwareDumpLoader extends CmsDumpLoader implements I_CmsResourceLo
    */
   public boolean isStaticExportEnabled() {
 
-      return false;
+      return true;
   }
 
   /**
