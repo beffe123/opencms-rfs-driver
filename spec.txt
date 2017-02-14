@@ -1,0 +1,6 @@
+
+mount points:
+- folder with unzipped root db exports or modules
+  if sub of webapp (WEB-INF) then jsps are called directly instead of being exported
+- folder that contains a root db export
+- folder that maps to a vfs folder
