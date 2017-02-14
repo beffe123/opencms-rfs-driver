@@ -313,15 +313,23 @@ public class RfsDriver extends VfsDriverWrapper {
         if (service.hasChildrenForResource(parentResource)) {
           List<CmsResource> children = service.getChildResources(parentResource, getFolders, getFiles);
   
-          if (!directChildrenOnly) {
-            for (CmsResource child: children) {
-              if (child.isFolder() && getFolders) {
-                result.addAll(readResourceTree(dbc, projectId, child.getStructureId().toString(), type, state, startTime, endTime, 
-                    releasedAfter, releasedBefore, expiredAfter, expiredBefore, mode));
-              }
+          for (CmsResource child: children) {
+            CmsResource check = null;
+            try {
+              check = nextDriver.readResource(dbc, projectId, child.getRootPath(), true);
+            }
+            catch (CmsDataAccessException cdae) {
+              
+            }
+            if (check == null) {
+              // only add children that do not exist in VFS
+              result.add(child);
+            }
+            if (!directChildrenOnly && child.isFolder() && getFolders) {
+              result.addAll(readResourceTree(dbc, projectId, child.getStructureId().toString(), type, state, startTime, endTime, 
+                  releasedAfter, releasedBefore, expiredAfter, expiredBefore, mode));
             }
           }
-          result.addAll(children);
         }
       }
     }

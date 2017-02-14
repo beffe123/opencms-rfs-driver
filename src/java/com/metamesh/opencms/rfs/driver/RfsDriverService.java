@@ -263,12 +263,14 @@ public class RfsDriverService {
           md.setManifestInfo(new ManifestInfo(dbFolder, webappBasePath, manifest, manifest.lastModified()));
           parseDoc(dbFolder, webappBasePath, manifest, md);
 
-          CmsModule importedModule = CmsModuleImportExportHandler.readModuleFromImport(dbFolder.getAbsolutePath());
-          
-          addModuleToManager(importedModule);
-
-          if (ramcfg != null) {
-            ramcfg.addReadonlyModule(importedModule);
+          if (md.getManifestInfo().hasModuleConfig()) {
+            CmsModule importedModule = CmsModuleImportExportHandler.readModuleFromImport(dbFolder.getAbsolutePath());
+            
+            addModuleToManager(importedModule);
+  
+            if (ramcfg != null) {
+              ramcfg.addReadonlyModule(importedModule);
+            }
           }
         }
         

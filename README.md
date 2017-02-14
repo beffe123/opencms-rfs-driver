@@ -19,8 +19,11 @@ Purpose
     the file content at first completely from the DB into memory (a byte array) and then write it to 
     the output stream. The drawbacks are that it takes some time (the larger the file the longer it takes) 
     until OpenCms starts to send data to the client and that it requires much heap space.
+    Another drawback is that the dump loader from OpenCms does not support HTTP range requests (e.g. for pseudo streaming
+    or resuming canceled downloads).
   * The RFS driver comes with an improved dump loader that streams those large files directly from the RFS. Playback
-    of videos can start immediately and it uses only 4 KB of heap.
+    of videos can start instantly, you can jump immediately to any position of a video without having it fully downloaded 
+    due to support for HTTP range requests and it uses only 4 KB of heap for buffering.
 
 Installation
 ------------
@@ -42,12 +45,12 @@ Notes
   * The RFS driver does not distinguish between online and offline projects - all resources are available in both
     without difference
   * You cannot write to RFS resources from within OpenCms
-  * You cannot set properties for RFS resources from within OpenCms (but you can set properites within a manifest.xml)
+  * You cannot set properties for RFS resources from within OpenCms (but you can set properties within a manifest.xml)
   * I keep my Java classes (the JAR file) completely out of the module and copy it manually (or automatically)
     to WEB-INF/lib
-  * Allthough the driver comes with an improved dump loader for large files, you should configure the webserver
+  * Although the driver comes with an improved dump loader for large files, you should configure the webserver
     to serve them directly, e.g. everything under the URI "/videos/*"
-  * The Driver has been devoloped mainly for developing purpose - there still may be some bugs
+  * The Driver has been developed mainly for developing purpose - there still may be some bugs
   * Most OpenCms modules will not work as unzipped modules because OpenCms comes with some proprietary
     non-standard JSP-extensions (sigh), e.g. a taglibs attribute of the JSP page directive. 
     Those JSPs won't compile. Other extensions may compile, but the JSP won't work as expected.

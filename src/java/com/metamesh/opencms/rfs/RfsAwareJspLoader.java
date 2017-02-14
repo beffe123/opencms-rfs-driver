@@ -62,12 +62,12 @@ public class RfsAwareJspLoader extends CmsJspLoader {
       // get JSP target name on "real" file system
       String target = rcf.getWebappPath();
       if (target != null) {
-      // important: Indicate that all output must be buffered
-      controller.getCurrentResponse().setOnlyBuffering(true);
-      // dispatch to external file
-      controller.getCurrentRequest().getRequestDispatcherToExternal(cms.getSitePath(resource), target).include(
-          req,
-          res);
+        // important: Indicate that all output must be buffered
+        controller.getCurrentResponse().setOnlyBuffering(true);
+        // dispatch to external file
+        controller.getCurrentRequest().getRequestDispatcherToExternal(cms.getSitePath(resource), target).include(
+            req,
+            res);
       }
       else {
         // update date last modified to make sure that the jsp is exported if it has been modified
